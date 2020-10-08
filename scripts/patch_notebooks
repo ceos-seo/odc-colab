@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+pushd $(dirname "$0")
+echo Patching notebooks...
+for notebook in $(ls ../data_cube_notebooks/notebooks/DCAL | grep .ipynb); do
+    patch ../data_cube_notebooks/notebooks/DCAL/$notebook ./patch.diff
+done
+popd

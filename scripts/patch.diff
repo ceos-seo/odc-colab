@@ -1,0 +1,12 @@
+3a4,14
+>    "cell_type": "code",
+>    "execution_count": null,
+>    "metadata": {},
+>    "outputs": [],
+>    "source": [
+>     "#wget script\n",
+>     "from odc_colab import odc_colab_init, populate_db\n",
+>     "odc_colab_init(use_defaults=True, download_db=True); populate_db('db_dump.tar.xz')"
+>    ]
+>   },
+>   {
