@@ -3,5 +3,6 @@ pushd $(dirname "$0")
 echo Patching notebooks...
 for notebook in $(ls ../data_cube_notebooks/notebooks/DCAL | grep .ipynb); do
     patch ../data_cube_notebooks/notebooks/DCAL/$notebook ./patch.diff
+    sed -i "s/ls8_lasrc.*'/ls8_usgs_sr_scene/g" ../data_cube_notebooks/notebooks/DCAL/$notebook
 done
 popd
