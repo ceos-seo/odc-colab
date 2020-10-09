@@ -10,7 +10,7 @@
 >    "metadata": {},
 >    "outputs": [],
 >    "source": [
->     "!wget https://raw.githubusercontent.com/ceos-seo/odc-colab/master/scripts/odc_colab.py\n",
+>     "!wget https://raw.githubusercontent.com/ceos-seo/odc-colab/master/odc_colab.py\n",
 >     "!wget https://raw.githubusercontent.com/ceos-seo/odc-colab/master/database/db_dump.tar.xz\n",
 >     "from odc_colab import odc_colab_init, populate_db\n",
 >     "odc_colab_init(use_defaults=True); populate_db('db_dump.tar.xz')"
