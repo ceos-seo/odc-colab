@@ -308,9 +308,8 @@ local   all             all                                     trust
             except Exception as error:
                 print(error)
 
-# TODO: Change this for GitHub usage.
-# DB dump file will be compressed and split to keep under 100MB.
-def populate_db(tar_file):
+# TODO: May need to change this for split tar files due to GitHub size restrictions.
+def populate_db(tar_file=None):
     ''' Populates the datacube database from a compressed SQL dump.
 
     Args:
@@ -318,6 +317,16 @@ def populate_db(tar_file):
 
     Raises OSError if tar file is not found.
     '''
+    if not tar_file:
+        from urllib import request
+        url = 'https://raw.githubusercontent.com/ceos-seo/odc-colab/master/database/db_dump.tar.xz'
+        print('No database file supplied. Downloading default index.')
+        resp = request.urlopen(url)
+        if resp.code < 300:
+            tar_file = f'./{url.split("/")[-1]}'
+            with open(tar_file, 'wb') as _file:
+                _file.write(resp.read())
+
     import tarfile
     from pathlib import Path
     path = Path(tar_file)
