@@ -25,6 +25,8 @@ for notebook in $(ls ./notebooks/DCAL | grep .ipynb); do
     sed -i "s@<URL_PLACEHOLDER>@github/ceos-seo/odc-colab/blob/master/data_cube_notebooks/notebooks/DCAL/$notebook@g" \
         ./notebooks/DCAL/$notebook
     sed -i "s/ls8_lasrc[_a-z]*/ls8_usgs_sr_scene/g" ./notebooks/DCAL/$notebook
+    sed -i "s/platform[ =]*['"'"]LANDSAT_7["'"']/platform = 'LANDSAT_8'/g" ./notebooks/DCAL/$notebook
+    sed -i "s/product[ =]*['"'"]ls7[_a-z]*["'"']/product = 'ls8_usgs_sr_scene'/g" ./notebooks/DCAL/$notebook
 done
 
 echo "> Cleaning .git files from repository"
