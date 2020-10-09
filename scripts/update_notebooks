@@ -24,7 +24,7 @@ for notebook in $(ls ./notebooks/DCAL | grep .ipynb); do
     patch ./notebooks/DCAL/$notebook ../notebook_patch.diff
     sed -i "s@<URL_PLACEHOLDER>@github/ceos-seo/odc-colab/blob/master/data_cube_notebooks/notebooks/DCAL/$notebook@g" \
         ./notebooks/DCAL/$notebook
-    sed -i "s/ls8_lasrc.*'/ls8_usgs_sr_scene/g" ./notebooks/DCAL/$notebook
+    sed -i "s/ls8_lasrc[_a-z]*/ls8_usgs_sr_scene/g" ./notebooks/DCAL/$notebook
 done
 
 echo "> Cleaning .git files from repository"

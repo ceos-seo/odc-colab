@@ -10,7 +10,7 @@
 >    "cell_type": "markdown",
 >    "metadata": {},
 >    "source": [
->     "Downloads the odc-colab Python module and runs it."
+>     "Downloads the odc-colab Python module and runs it to setup ODC."
 >    ]
 >   },
 >   {
@@ -28,7 +28,7 @@
 >    "cell_type": "markdown",
 >    "metadata": {},
 >    "source": [
->     "Downloads an existing index and populates the new ODC ."
+>     "Downloads an existing index and populates the new ODC environment with it."
 >    ]
 >   },
 >   {
