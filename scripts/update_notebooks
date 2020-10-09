@@ -17,11 +17,11 @@ git clone --filter=blob:none --no-checkout https://github.com/ceos-seo/data_cube
 pushd ../data_cube_notebooks
 git sparse-checkout init --cone
 git sparse-checkout set notebooks/DCAL
-git checkout .
+git checkout
 
 echo "> Patching notebooks"
 for notebook in $(ls ./notebooks/DCAL | grep .ipynb); do
-    patch ./notebooks/DCAL/$notebook ./patch.diff
+    patch ./notebooks/DCAL/$notebook ../scripts/patch.diff
     sed -i "s@<URL_PLACEHOLDER>@github/ceos-seo/odc-colab/blob/master/data_cube_notebooks/notebooks/DCAL/$notebook@g" \
         ./notebooks/DCAL/$notebook
     sed -i "s/ls8_lasrc.*'/ls8_usgs_sr_scene/g" ./notebooks/DCAL/$notebook
