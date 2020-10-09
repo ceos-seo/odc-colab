@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+# Check that git version supports sparse-checkout
+git_version=$(git --version | grep -o \[0-9\].\*\$ | awk '$1>2.25')
+if [ ! $git_version ]; then
+    echo "Need git>=2.25 to proceed."
+    exit 1
+fi
+
+pushd $(dirname "$0")
+echo Updating notebooks...
+
+echo "> Deleting old notebooks"
+rm -rf ../data_cube_notebooks
+
+echo "> Cloning latest from repository"
+git clone --filter=blob:none --no-checkout https://github.com/ceos-seo/data_cube_notebooks.git ../data_cube_notebooks
+pushd ../data_cube_notebooks
+git sparse-checkout init --cone
+git sparse-checkout set notebooks/DCAL
+git checkout .
+
+echo "> Patching notebooks"
+for notebook in $(ls ./notebooks/DCAL | grep .ipynb); do
+    patch ./notebooks/DCAL/$notebook ./patch.diff
+    sed -i "s@<URL_PLACEHOLDER>@github/ceos-seo/odc-colab/blob/master/data_cube_notebooks/notebooks/DCAL/$notebook@g" \
+        ./notebooks/DCAL/$notebook
+    sed -i "s/ls8_lasrc.*'/ls8_usgs_sr_scene/g" ./notebooks/DCAL/$notebook
+done
+
+echo "> Cleaning .git files from repository"
+rm -rf ./.git*
+
+echo Notebooks updated.
