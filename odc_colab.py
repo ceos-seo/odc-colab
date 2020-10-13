@@ -143,7 +143,7 @@ def _dc_config_present(use_defaults):
     ''' Checks if the datacube configuration exists.
 
     Args:
-        use_defaults (bool): A flag to use a default configuration or not.
+        use_defaults (bool): A flag to use a default local database configuration or not.
 
     Returns:
         False if the configuration does not exist.
@@ -194,7 +194,7 @@ def odc_colab_init(
         install_datacube=True,
         install_ceos_utils=True,
         install_postgresql=True,
-        use_defaults=False,
+        use_defaults=True,
         **kwargs
         ):
     '''
@@ -225,7 +225,7 @@ def odc_colab_init(
         install_datacube (bool): Optional; flag to install an ODC environment.
         install_ceos_utils (bool): Optional; flag to install CEOS ODC utilities.
         install_postgresql (bool): Optional; flag to install postgresql.
-        use_defaults (bool): Optional; flag to install environment with default configuration.
+        use_defaults (bool): Optional; flag to install environment with default local database configuration.
     '''
     # Set environment variables
     env = {

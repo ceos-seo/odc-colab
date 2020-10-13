@@ -21,7 +21,7 @@
 >    "source": [
 >     "!wget https://raw.githubusercontent.com/ceos-seo/odc-colab/master/odc_colab.py\n",
 >     "from odc_colab import odc_colab_init\n",
->     "odc_colab_init(use_defaults=True)"
+>     "odc_colab_init()"
 >    ]
 >   },
 >   {
