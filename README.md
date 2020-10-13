@@ -3,9 +3,16 @@ ODC-Colab is a project designed to make Open Data Cube notebooks run on Google
 Colab. This is done through a Python module with methods for performing an
 automated setup of an ODC environment.
 
+This repository includes a CEOS Colab implementation from the CEOS ODC
+notebooks repository:
+
+[https://github.com/ceos-seo/data_cube_notebooks](https://github.com/ceos-seo/data_cube_notebooks).
+
 ## Usage
 To use the Python module you will need to add some code to the top of your
-notebook.
+notebook. There are two different options for environments.
+### Local database environment
+This environment is for installing ODC with a local database.
 
 The following block downloads the module and then runs the setup with default
 configuration:
@@ -14,15 +21,38 @@ configuration:
 	from odc_colab import odc_colab_init
 	odc_colab_init(use_defaults=True)
 
-This block of code will populate the new ODC database with a default index:
+The previous block of code will create an environment, but the index will be
+empty so needs to be populated. This can be done with by uploading a database
+dump of an existing index and running the following code:
 
-	!wget https://raw.githubusercontent.com/ceos-seo/odc-colab/master/database/db_dump.tar.xz
 	from odc_colab import populate_db
-	populate_db('db_dump.tar.xz')
+	populate_db('<database_dump_location>.tar.xz')
 
-### Converting existing notebooks
-A diff file is included to make converting from Jupyter notebooks to Colab
-notebooks simple. This can be done using the `patch` command: `patch
+Not specifying a file will default to downloading the database from this
+repository: `populate_db()`.
+
+### Remote database environment
+This environment is for installing ODC with a remote database.
+
+The following block sets an environment variable for reading remote connections and initializes the
+ODC environment:
+
+Substitutions:
+* `hostname`: the hostname of the target database.
+* `username`: the username of the target database.
+* `password`: Optional; the password for the connecting username (default: None).
+* `dbname`: Optional; the database name to connect to (default: datacube).
+* `port`: Optional; the port number to connect to (default: 5432).
+
+	from odc_colab import build_datacube_db_url, odc_colab_init
+	odc_colab_init(install_postgresql=False, use_defaults=False,
+				   DATACUBE_DB_URL=build_datacube_db_url(<hostname>, <username>, password=<password>,
+														 dbname=<dbname>, port=<port>)
+
+
+### Converting existing notebooks (advanced)
+A diff file is included to make converting from existing Jupyter notebooks to
+Colab notebooks simple. This can be done using the GNU `patch` tool: `patch
 <jupyter_notebook> notebook_patch.diff`.
 
 **NOTE:** The patch only adds the top blocks specified earlier. Other code in
