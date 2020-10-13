@@ -10,8 +10,9 @@ notebooks repository:
 These notebooks can be found in the `notebooks/DCAL` folder.
 
 ## Usage
-To use the Python module you will need to add some code to the top of your
-notebook. There are two different options for environments.
+You will need to add some code to the top of your
+notebook to use the Python module. There are two different options for
+environments.
 ### Local database environment
 This environment is for installing ODC with a local database.
 
@@ -46,6 +47,7 @@ Substitutions:
 * `port`: Optional; the port number to connect to (default: 5432).
 
 ```
+!wget https://raw.githubusercontent.com/ceos-seo/odc-colab/master/odc_colab.py
 from odc_colab import build_datacube_db_url, odc_colab_init
 odc_colab_init(install_postgresql=False, use_defaults=False,
                DATACUBE_DB_URL=build_datacube_db_url(<hostname>, <username>, password=<password>,
