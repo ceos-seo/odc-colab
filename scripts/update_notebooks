@@ -1,0 +1,73 @@
+#!/usr/bin/env bash
+
+# Colorful headers to track progress
+header1() {
+    echo -e "\033[1;34m:: \033[0;1m$1"
+}
+header2() {
+    echo -e "\033[1;32m==> \033[0;1m$1"
+}
+header3() {
+    echo -e "\033[1;36m  -> \033[0;1m$1"
+}
+
+# Check that git version supports sparse-checkout
+git_version=$(git --version | grep -o \[0-9\].\*\$ | awk '$1>2.25')
+if [ ! $git_version ]; then
+    echo -e "\033[1;31mNeed git>=2.25 to proceed."
+    exit 1
+fi
+
+# Make sure the pwd is where we want it
+pushd $(dirname "$0")
+header1 "Updating notebooks..."
+
+header2 "Deleting old notebooks..."
+rm -rf ../notebooks
+
+# Clone the repo without all the files
+header2 "Cloning latest from repository..."
+git clone --filter=blob:none --no-checkout https://github.com/ceos-seo/data_cube_notebooks.git ../data_cube_notebooks
+# Sparse checkout the repo to grab only what is needed
+header3 "Performing sparse checkout..."
+pushd ../data_cube_notebooks
+git sparse-checkout init --cone
+git sparse-checkout set notebooks/DCAL
+git checkout
+
+# Patch the notebooks
+header2 "Patching notebooks..."
+for notebook in $(ls ./notebooks/DCAL | grep .ipynb); do
+    if [[ $notebook == "DCAL_Custom_Mosaics_Dask.ipynb" || $notebook == "DCAL_Water_Extents.ipynb" ]]; then
+        # Remove notebooks that will not work in Colab
+        header3 "Removing $notebook..."
+        rm -f ./notebooks/DCAL/$notebook
+    else 
+        header3 "Patching $notebook..."
+        patch ./notebooks/DCAL/$notebook ../notebook_patch.diff
+        sed -i "s@<URL_PLACEHOLDER>@github/ceos-seo/odc-colab/blob/master/data_cube_notebooks/notebooks/DCAL/$notebook@g" \
+            ./notebooks/DCAL/$notebook
+        sed -i "s/ls8_lasrc[_a-z]*/ls8_usgs_sr_scene/g" ./notebooks/DCAL/$notebook
+        perl -pi -e "s/platform(?!==| ==)[ =].*LANDSAT_7(\\\\\"|')/platform = 'LANDSAT_8'/g" ./notebooks/DCAL/$notebook
+        perl -pi -e "s/product(?!==| ==)[ =].*ls7[_a-z]*(\\\\\"|')/product = 'ls8_usgs_sr_scene'/g" ./notebooks/DCAL/$notebook
+        if [ $notebook == "DCAL_Land_Change.ipynb" ]; then
+            sed -i "s/2015/2019/g" ./notebooks/DCAL/$notebook
+            sed -i "s/2002/2015/g" ./notebooks/DCAL/$notebook
+        fi
+        if [ $notebook == "DCAL_Spectral_Products.ipynb" ]; then
+            sed -i "s/os.mkdir/os.makedirs/g" ./notebooks/DCAL/$notebook
+        fi
+    fi
+done
+
+# Remove more files and move notebooks dir
+header2 "Cleaning and reorganizing files..."
+rm -rf ./.git*
+rm -f ./notebooks/*.py
+for dir in $(ls -I "*.ipynb" ./notebooks/DCAL); do
+    rm -rf ./notebooks/DCAL/$dir
+done
+mv ./notebooks ../
+pushd && rm -rf ../data_cube_notebooks
+
+header1 "Notebooks updated."
