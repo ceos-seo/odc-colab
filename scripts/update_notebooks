@@ -33,13 +33,25 @@ git checkout
 
 header2 "Patching notebooks..."
 for notebook in $(ls ./notebooks/DCAL | grep .ipynb); do
-    header3 "Patching $notebook..."
-    patch ./notebooks/DCAL/$notebook ../notebook_patch.diff
-    sed -i "s@<URL_PLACEHOLDER>@github/ceos-seo/odc-colab/blob/master/data_cube_notebooks/notebooks/DCAL/$notebook@g" \
-        ./notebooks/DCAL/$notebook
-    sed -i "s/ls8_lasrc[_a-z]*/ls8_usgs_sr_scene/g" ./notebooks/DCAL/$notebook
-    perl -pi -e "s/platform(?!==| ==)[ =].*LANDSAT_7(\\\\\"|')/platform = 'LANDSAT_8'/g" ./notebooks/DCAL/$notebook
-    perl -pi -e "s/product(?!==| ==)[ =].*ls7[_a-z]*(\\\\\"|')/product = 'ls8_usgs_sr_scene'/g" ./notebooks/DCAL/$notebook
+    if [[ $notebook == "DCAL_Custom_Mosaics_Dask.ipynb" || $notebook == "DCAL_Water_Extents.ipynb" ]]; then
+        header3 "Removing $notebook..."
+        rm -f ./notebooks/DCAL/$notebook
+    else 
+        header3 "Patching $notebook..."
+        patch ./notebooks/DCAL/$notebook ../notebook_patch.diff
+        sed -i "s@<URL_PLACEHOLDER>@github/ceos-seo/odc-colab/blob/master/data_cube_notebooks/notebooks/DCAL/$notebook@g" \
+            ./notebooks/DCAL/$notebook
+        sed -i "s/ls8_lasrc[_a-z]*/ls8_usgs_sr_scene/g" ./notebooks/DCAL/$notebook
+        perl -pi -e "s/platform(?!==| ==)[ =].*LANDSAT_7(\\\\\"|')/platform = 'LANDSAT_8'/g" ./notebooks/DCAL/$notebook
+        perl -pi -e "s/product(?!==| ==)[ =].*ls7[_a-z]*(\\\\\"|')/product = 'ls8_usgs_sr_scene'/g" ./notebooks/DCAL/$notebook
+        if [ $notebook == "DCAL_Land_Change.ipynb" ]; then
+            sed -i "s/2015/2019/g" ./notebooks/DCAL/$notebook
+            sed -i "s/2002/2015/g" ./notebooks/DCAL/$notebook
+        fi
+        if [ $notebook == "DCAL_Spectral_Products.ipynb" ]; then
+            sed -i "s/os.mkdir/os.makedirs/g" ./notebooks/DCAL/$notebook
+        fi
+    fi
 done
 
 header2 "Cleaning and reorganizing files..."
