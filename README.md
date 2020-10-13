@@ -3,10 +3,11 @@ ODC-Colab is a project designed to make Open Data Cube notebooks run on Google
 Colab. This is done through a Python module with methods for performing an
 automated setup of an ODC environment.
 
-This repository includes a CEOS Colab implementation from the CEOS ODC
+This repository includes an example CEOS Colab implementation of the CEOS ODC
 notebooks repository:
-
 [https://github.com/ceos-seo/data_cube_notebooks](https://github.com/ceos-seo/data_cube_notebooks).
+
+These notebooks can be found in the `notebooks/DCAL` folder.
 
 ## Usage
 To use the Python module you will need to add some code to the top of your
@@ -28,8 +29,8 @@ dump of an existing index and running the following code:
 	from odc_colab import populate_db
 	populate_db('<database_dump_location>.tar.xz')
 
-Not specifying a file will default to downloading the database from this
-repository: `populate_db()`.
+Not specifying a file will default to downloading `database/db_dump.tar.xz`
+from this repository and using that to populate the database: `populate_db()`.
 
 ### Remote database environment
 This environment is for installing ODC with a remote database.
@@ -44,11 +45,12 @@ Substitutions:
 * `dbname`: Optional; the database name to connect to (default: datacube).
 * `port`: Optional; the port number to connect to (default: 5432).
 
-	from odc_colab import build_datacube_db_url, odc_colab_init
-	odc_colab_init(install_postgresql=False, use_defaults=False,
-				   DATACUBE_DB_URL=build_datacube_db_url(<hostname>, <username>, password=<password>,
-														 dbname=<dbname>, port=<port>)
-
+```
+from odc_colab import build_datacube_db_url, odc_colab_init
+odc_colab_init(install_postgresql=False, use_defaults=False,
+               DATACUBE_DB_URL=build_datacube_db_url(<hostname>, <username>, password=<password>,
+		                                     dbname=<dbname>, port=<port>)
+```
 
 ### Converting existing notebooks (advanced)
 A diff file is included to make converting from existing Jupyter notebooks to
