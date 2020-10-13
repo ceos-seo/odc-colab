@@ -56,6 +56,10 @@ done
 
 header2 "Cleaning and reorganizing files..."
 rm -rf ./.git*
+rm -f ./notebooks/*.py
+for dir in $(ls -I "*.ipynb" ./notebooks/DCAL); do
+    rm -rf ./notebooks/DCAL/$dir
+done
 mv ./notebooks ../
 pushd && rm -rf ../data_cube_notebooks
 
