@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+colab_uri="/ceos-seo/odc-colab/blob/master/notebooks/DCAL"
+
 # Colorful headers to track progress
 header1() {
     echo -e "\033[1;34m:: \033[0;1m$1"
@@ -45,8 +47,7 @@ for notebook in $(ls ./notebooks/DCAL | grep .ipynb); do
     else 
         header3 "Patching $notebook..."
         patch ./notebooks/DCAL/$notebook ../notebook_patch.diff
-        sed -i "s@<URL_PLACEHOLDER>@github/ceos-seo/odc-colab/blob/master/data_cube_notebooks/notebooks/DCAL/$notebook@g" \
-            ./notebooks/DCAL/$notebook
+        sed -i "s@<URI_PLACEHOLDER>@$colab_uri/$notebook@g" ./notebooks/DCAL/$notebook
         sed -i "s/ls8_lasrc[_a-z]*/ls8_usgs_sr_scene/g" ./notebooks/DCAL/$notebook
         perl -pi -e "s/platform(?!==| ==)[ =].*LANDSAT_7(\\\\\"|')/platform = 'LANDSAT_8'/g" ./notebooks/DCAL/$notebook
         perl -pi -e "s/product(?!==| ==)[ =].*ls7[_a-z]*(\\\\\"|')/product = 'ls8_usgs_sr_scene'/g" ./notebooks/DCAL/$notebook

@@ -59,6 +59,11 @@ A diff file is included to make converting from existing Jupyter notebooks to
 Colab notebooks simple. This can be done using the GNU `patch` tool: `patch
 <jupyter_notebook> notebook_patch.diff`.
 
+This will also add a Colab button to the top of the notebook. This button can
+take a GitHub URI for the notebook and automatically open it in Colab from
+there. You will have to replace the `<URI_PLACEHOLDER>` with your notebook's
+URI first, or you can optionally remove that block from your notebook.
+
 **NOTE:** The patch only adds the top blocks specified earlier. Other code in
 the notebook may need to be edited in order for the notebook to run to
 completion in Colab.
