@@ -1,23 +1,24 @@
 # ODC-Colab
-ODC-Colab is a project designed to make Open Data Cube notebooks run on Google
-Colab. This is done through a Python module with methods for performing an
-automated setup of an ODC environment.
+ODC-Colab is a CEOS initiative to make Open Data Cube notebooks run on Google
+Colab. This is done through a Python module with methods that perform an
+automated setup of an ODC environment through simple method calls.
 
-This repository includes an example CEOS Colab implementation of the CEOS ODC
+This repository includes an example implementation of the CEOS ODC
 notebooks repository:
 [https://github.com/ceos-seo/data_cube_notebooks](https://github.com/ceos-seo/data_cube_notebooks).
 
 These notebooks can be found in the `notebooks/DCAL` folder.
 
 ## Usage
-You will need to add some code to the top of your
-notebook to use the Python module. There are two different options for
-environments.
+You will need to add some code to the top of your notebook to use the Python
+module. There are two different example options for environments shown, but
+these are not the only uses of the module. More options are available and can
+be found by reading the included docstrings in the `odc_colab.py` source file.
 ### Local database environment
 This environment is for installing ODC with a local database.
 
-The following block downloads the module and then runs the setup with default
-configuration:
+The following block downloads the Python module and then runs the setup with a
+default local database configuration that includes CEOS ODC utilities:
 
 	!wget https://raw.githubusercontent.com/ceos-seo/odc-colab/master/odc_colab.py
 	from odc_colab import odc_colab_init
@@ -36,8 +37,9 @@ from this repository and using that to populate the database: `populate_db()`.
 ### Remote database environment
 This environment is for installing ODC with a remote database.
 
-The following block sets an environment variable for reading remote connections and initializes the
-ODC environment:
+The following block downloads the Python module, sets an environment variable
+to allow remote connections, and initializes the ODC environment with CEOS ODC
+utilities included:
 
 Substitutions:
 * `hostname`: the hostname of the target database.
