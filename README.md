@@ -20,7 +20,7 @@ This environment is for installing ODC with a local database.
 The following block downloads the Python module and then runs the setup with a
 default local database configuration that includes CEOS ODC utilities:
 
-	!wget https://raw.githubusercontent.com/ceos-seo/odc-colab/master/odc_colab.py
+	!wget -nc https://raw.githubusercontent.com/ceos-seo/odc-colab/master/odc_colab.py
 	from odc_colab import odc_colab_init
 	odc_colab_init(use_defaults=True)
 
@@ -49,7 +49,7 @@ Substitutions:
 * `port`: Optional; the port number to connect to (default: 5432).
 
 ```
-!wget https://raw.githubusercontent.com/ceos-seo/odc-colab/master/odc_colab.py
+!wget -nc https://raw.githubusercontent.com/ceos-seo/odc-colab/master/odc_colab.py
 from odc_colab import build_datacube_db_url, odc_colab_init
 odc_colab_init(install_postgresql=False, use_defaults=False,
                DATACUBE_DB_URL=build_datacube_db_url(<hostname>, <username>, password=<password>,
@@ -67,11 +67,11 @@ there. You will have to replace the `<URI_PLACEHOLDER>` with your notebook's
 URI first, or you can optionally remove that block from your notebook.
 
 **NOTE:** The patch only adds the top blocks specified earlier. Other code in
-the notebook may need to be edited in order for the notebook to run to
-completion in Colab.
+the notebook may need to be edited (such as product names and extents) in order
+for the notebook to run to completion in Colab.
 
 ## Developers
-Info for developers working on this repository.
+Info for developers working on this repository:
 
 Example notebooks are included in the repository to showcase usage in Colab.
 These notebooks are populated using a script which pulls the latest DCAL
