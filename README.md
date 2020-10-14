@@ -1,10 +1,10 @@
 # ODC-Colab
-ODC-Colab is a CEOS initiative to make Open Data Cube notebooks run on Google
-Colab. This is done through a Python module with methods that perform an
-automated setup of an ODC environment through simple method calls.
+ODC-Colab is a CEOS initiative to demonstrate Open Data Cube notebooks running
+on Google Colab. This is done through a Python module with methods that perform
+an automated setup of an ODC environment through simple method calls.
 
-This repository includes an example implementation of the CEOS ODC
-notebooks repository:
+This repository includes several examples from the CEOS ODC notebooks
+repository:
 [https://github.com/ceos-seo/data_cube_notebooks](https://github.com/ceos-seo/data_cube_notebooks).
 
 These notebooks can be found in the `notebooks/DCAL` folder.
