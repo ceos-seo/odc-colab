@@ -1,10 +1,10 @@
 # ODC-Colab
-ODC-Colab is a CEOS initiative to make Open Data Cube notebooks run on Google
-Colab. This is done through a Python module with methods that perform an
-automated setup of an ODC environment through simple method calls.
+ODC-Colab is a CEOS initiative to demonstrate Open Data Cube notebooks running
+on Google Colab. This is done through a Python module with methods that perform
+an automated setup of an ODC environment through simple method calls.
 
-This repository includes an example implementation of the CEOS ODC
-notebooks repository:
+This repository includes several examples from the CEOS ODC notebooks
+repository:
 [https://github.com/ceos-seo/data_cube_notebooks](https://github.com/ceos-seo/data_cube_notebooks).
 
 These notebooks can be found in the `notebooks/DCAL` folder.
@@ -71,12 +71,16 @@ the notebook may need to be edited in order for the notebook to run to
 completion in Colab.
 
 ## Developers
+Info for developers working on this repository.
+
 Example notebooks are included in the repository to showcase usage in Colab.
 These notebooks are populated using a script which pulls the latest DCAL
 notebooks from the [ceos-seo notebooks project on
 GitHub](https://github.com/ceos-seo/data_cube_notebooks.git).
 
-To run the script: `./scripts/update_notebooks`
+The script `scripts/update_notebooks` requires `git>=2.25` to run.
 
-This uses the patch file mentioned above and replaces other items in the
-notebook in order for it to run to completion.
+It uses the patch file mentioned above and replaces other items in a notebook
+in order for it to run to completion. It also removes the DCAL notebooks unable
+to run to completion. This script will need to be ran whenever the diff is
+updated or changes are made to the script itself.
