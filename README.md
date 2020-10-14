@@ -20,7 +20,7 @@ This environment is for installing ODC with a local database.
 The following block downloads the Python module and then runs the setup with a
 default local database configuration that includes CEOS ODC utilities:
 
-	!wget https://raw.githubusercontent.com/ceos-seo/odc-colab/master/odc_colab.py
+	!wget -nc https://raw.githubusercontent.com/ceos-seo/odc-colab/master/odc_colab.py
 	from odc_colab import odc_colab_init
 	odc_colab_init(use_defaults=True)
 
@@ -49,7 +49,7 @@ Substitutions:
 * `port`: Optional; the port number to connect to (default: 5432).
 
 ```
-!wget https://raw.githubusercontent.com/ceos-seo/odc-colab/master/odc_colab.py
+!wget -nc https://raw.githubusercontent.com/ceos-seo/odc-colab/master/odc_colab.py
 from odc_colab import build_datacube_db_url, odc_colab_init
 odc_colab_init(install_postgresql=False, use_defaults=False,
                DATACUBE_DB_URL=build_datacube_db_url(<hostname>, <username>, password=<password>,
