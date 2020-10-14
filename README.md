@@ -25,7 +25,7 @@ default local database configuration that includes CEOS ODC utilities:
 	odc_colab_init(use_defaults=True)
 
 The previous block of code will create an environment, but the index will be
-empty so needs to be populated. This can be done with by uploading a database
+empty so needs to be populated. This can be done by uploading a database
 dump of an existing index and running the following code:
 
 	from odc_colab import populate_db
