@@ -82,5 +82,5 @@ The script `scripts/update_notebooks` requires `git>=2.25` to run.
 
 It uses the patch file mentioned above and replaces other items in a notebook
 in order for it to run to completion. It also removes the DCAL notebooks unable
-to run to completion. This script will need to be ran whenever the diff is
+to run to completion. This script will need to be run whenever the diff is
 updated or changes are made to the script itself.
