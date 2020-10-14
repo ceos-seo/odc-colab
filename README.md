@@ -67,11 +67,11 @@ there. You will have to replace the `<URI_PLACEHOLDER>` with your notebook's
 URI first, or you can optionally remove that block from your notebook.
 
 **NOTE:** The patch only adds the top blocks specified earlier. Other code in
-the notebook may need to be edited in order for the notebook to run to
-completion in Colab.
+the notebook may need to be edited (such as product names and extents) in order
+for the notebook to run to completion in Colab.
 
 ## Developers
-Info for developers working on this repository.
+Info for developers working on this repository:
 
 Example notebooks are included in the repository to showcase usage in Colab.
 These notebooks are populated using a script which pulls the latest DCAL
