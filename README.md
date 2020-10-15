@@ -38,6 +38,22 @@ database. Optionally, you can upload your own file to the Colab notebooks and
 manually import the database by calling
 `populate_db(<database_dump_location>.tar.xz)`.
 
+##### Converting existing notebooks (advanced)
+If you have existing notebooks you want to convert for use with this Colab
+configuration, a diff file is included to make converting from existing Jupyter
+notebooks to Colab notebooks simple. This can be done using the GNU `patch`
+tool: `patch <jupyter_notebook> notebook_patch.diff`.
+
+This will also add a Colab button to the top of the notebook. This button can
+take a GitHub URI for the notebook and automatically open it in Colab from
+there. You will have to replace the `<URI_PLACEHOLDER>` with your notebook's
+URI first, or you can optionally remove that block from your notebook.
+
+**NOTE:** The patch only adds the top blocks specified earlier for a local
+database environment.  Other code in the notebook may need to be edited (such
+as product names and extents) in order for the notebook to run to completion in
+Colab.
+
 ### Remote database environment
 This environment is for installing ODC with a remote database.
 
@@ -59,21 +75,6 @@ odc_colab_init(install_postgresql=False, use_defaults=False,
                DATACUBE_DB_URL=build_datacube_db_url(<hostname>, <username>, password=<password>,
 		                                     dbname=<dbname>, port=<port>)
 ```
-
-### Converting existing notebooks (advanced)
-A diff file is included to make converting from existing Jupyter notebooks to
-Colab notebooks simple. This can be done using the GNU `patch` tool: `patch
-<jupyter_notebook> notebook_patch.diff`.
-
-This will also add a Colab button to the top of the notebook. This button can
-take a GitHub URI for the notebook and automatically open it in Colab from
-there. You will have to replace the `<URI_PLACEHOLDER>` with your notebook's
-URI first, or you can optionally remove that block from your notebook.
-
-**NOTE:** The patch only adds the top blocks specified earlier for a local
-database environment.  Other code in the notebook may need to be edited (such
-as product names and extents) in order for the notebook to run to completion in
-Colab.
 
 ## Developers
 Info for developers working on this repository:
