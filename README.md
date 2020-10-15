@@ -22,17 +22,20 @@ default local database configuration that includes CEOS ODC utilities:
 
 	!wget -nc https://raw.githubusercontent.com/ceos-seo/odc-colab/master/odc_colab.py
 	from odc_colab import odc_colab_init
-	odc_colab_init(use_defaults=True)
+	odc_colab_init()
 
 The previous block of code will create an environment, but the index will be
-empty so needs to be populated. This can be done by uploading a database
-dump of an existing index and running the following code:
+empty so needs to be populated. This can be done by importing a database dump
+of an existing ODC index:
 
 	from odc_colab import populate_db
-	populate_db('<database_dump_location>.tar.xz')
+	populate_db()
 
-Not specifying a file will default to downloading `database/db_dump.tar.xz`
-from this repository and using that to populate the database: `populate_db()`.
+The `populate_db()` command without parameters will download
+`database/db_dump.tar.xz` from this repository to use for populating the
+database. Optionally, you can upload your own file to the Colab notebooks and
+manually import the database by calling
+`populate_db(<database_dump_location>.tar.xz)`.
 
 ### Remote database environment
 This environment is for installing ODC with a remote database.
@@ -66,9 +69,10 @@ take a GitHub URI for the notebook and automatically open it in Colab from
 there. You will have to replace the `<URI_PLACEHOLDER>` with your notebook's
 URI first, or you can optionally remove that block from your notebook.
 
-**NOTE:** The patch only adds the top blocks specified earlier. Other code in
-the notebook may need to be edited (such as product names and extents) in order
-for the notebook to run to completion in Colab.
+**NOTE:** The patch only adds the top blocks specified earlier for a local
+database environment.  Other code in the notebook may need to be edited (such
+as product names and extents) in order for the notebook to run to completion in
+Colab.
 
 ## Developers
 Info for developers working on this repository:
