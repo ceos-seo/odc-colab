@@ -3,7 +3,7 @@
 >   "cell_type": "markdown",
 >   "metadata": {},
 >   "source": [
->     "[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github<URI_PLACEHOLDER>)"
+>     "<a href=\"https://colab.research.google.com/github<URI_PLACEHOLDER>\" target=\"_parent\"><img src=\"https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open In Colab\"/></a>"
 >    ]
 >   },
 >   {
