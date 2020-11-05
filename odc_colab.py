@@ -173,7 +173,7 @@ db_hostname:
         return True
     return False
 
-def _psql_config_present():
+def _psql_running():
     ''' Checks if a PostgreSQL configuration is present.
 
     Returns:
@@ -181,11 +181,7 @@ def _psql_config_present():
         True if the configuration does exist.
     '''
     from os import path
-    import pwd
-    pw_names = [pw.pw_name for pw in pwd.getpwall()]
-    if (path.exists('/var/lib/postgresql/10/main/postgresql.conf') and
-            path.exists('/var/lib/postgresql/10/main/pg_hba.conf') and
-            'postgres' in pw_names):
+    if path.exists('/var/run/postgresql/10-main.pid'):
         return True
     return False
 
@@ -225,7 +221,8 @@ def odc_colab_init(
         install_datacube (bool): Optional; flag to install an ODC environment.
         install_ceos_utils (bool): Optional; flag to install CEOS ODC utilities.
         install_postgresql (bool): Optional; flag to install postgresql.
-        use_defaults (bool): Optional; flag to install environment with default local database configuration.
+        use_defaults (bool): Optional;
+            flag to install environment with default local database configuration.
     '''
     # Set environment variables
     env = {
@@ -275,30 +272,10 @@ More information on ODC environment configuration can be found at:
         _check_pip_install('hdmedians', verbose)
 
     if install_postgresql:
-        import shutil
-        psql_lib = '/var/lib/postgresql/10/main'
         _check_apt_install('postgresql', verbose)
-        if not _psql_config_present():
+        if not _psql_running():
             try:
-                shutil.copy(f'{psql_lib}/postgresql.auto.conf', f'{psql_lib}/postgresql.conf')
-                shutil.chown(f'{psql_lib}/postgresql.conf', 'postgres', 'postgres')
-                pg_hba = ("""
-# Allow any user on the local system to connect to any database with
-# any database user name using Unix-domain sockets (the default for local
-# connections).
-#
-# TYPE  DATABASE        USER            ADDRESS                 METHOD
-local   all             all                                     trust
-""").lstrip().rstrip()
-
-                with open(f'{psql_lib}/pg_hba.conf', 'w') as _file:
-                    _file.write(pg_hba)
-                shutil.chown(f'{psql_lib}/pg_hba.conf', 'postgres', 'postgres')
-                _shell_cmd(["sudo", "-u", "postgres",
-                            "/usr/lib/postgresql/10/bin/pg_ctl",
-                            "-D", psql_lib,
-                            "-l", "/var/log/postgresql/logfile",
-                            "start"])
+                _shell_cmd(["service", "postgresql", "start"])
                 _shell_cmd(["sudo", "-u", "postgres",
                             "createuser", "-s", "root"])
                 if install_datacube:
