@@ -1,7 +1,7 @@
 # pylint: disable=broad-except,unused-argument,import-outside-toplevel
 ''' Tools for setting up ODC in a Colab environment. '''
 import sys
-from os import environ
+from os import environ, listdir, remove
 
 def build_datacube_db_url(hostname, username, password=None, dbname='datacube', port=5432):
     ''' Build a PostgreSQL URL for connecting to a networked ODC database.
@@ -53,6 +53,7 @@ def _apt_install(package, verbose=False):
 
     Returns the result of the apt-get command.
     '''
+    _shell_cmd(["apt-get", "update"])
     return _shell_cmd(["apt-get", "install", package])
 
 def _git_install(url, module_name=None, verbose=False):
@@ -285,34 +286,67 @@ More information on ODC environment configuration can be found at:
             except Exception as error:
                 print(error)
 
-# TODO: May need to change this for split tar files due to GitHub size restrictions.
-def populate_db(tar_file=None):
+def _combine_split_files(path):
+    part_files = list(filter(lambda f: '.part' in f, listdir(path)))
+    if part_files:
+        part_files.sort()
+        path = path.joinpath(part_files[0].split('.')[0][:-3])
+        with open(path, 'wb') as combined_file:
+            for part_file in part_files:
+                with open(path.parent.joinpath(part_file), 'rb') as _file:
+                    combined_file.write(_file.read())
+    return path
+
+def _download_db(*args, **kwargs):
+    from urllib import request
+    url = 'https://raw.githubusercontent.com/ceos-seo/odc-colab/master/database/db_dump.tar.xz'
+    print('No database file supplied. Downloading default index.')
+    resp = request.urlopen(url)
+    if resp.code < 300:
+        tar_file = f'./{url.split("/")[-1]}'
+        with open(tar_file, 'wb') as _file:
+            _file.write(resp.read())
+    return tar_file
+
+
+def populate_db(path=None, google_dump=False):
     ''' Populates the datacube database from a compressed SQL dump.
 
     Args:
-        tar_file (str): The path to a tar file to load.
+        path (str): The path to a tar file to load or a directory of a split tar file.
+        earthengine (bool): Flag to download Google Earth Engine Landsat 8 index.
 
     Raises OSError if tar file is not found.
     '''
-    if not tar_file:
-        from urllib import request
-        url = 'https://raw.githubusercontent.com/ceos-seo/odc-colab/master/database/db_dump.tar.xz'
-        print('No database file supplied. Downloading default index.')
-        resp = request.urlopen(url)
-        if resp.code < 300:
-            tar_file = f'./{url.split("/")[-1]}'
-            with open(tar_file, 'wb') as _file:
-                _file.write(resp.read())
-
     import tarfile
+    import tempfile
     from pathlib import Path
-    path = Path(tar_file)
+    from shutil import move
+
+    if not path:
+        path = _download_db()
+
+    path = Path(path).absolute()
     if path.exists():
-        with tarfile.open(path.name, 'r') as tar:
-            tar.extractall()
-        for suffix in path.suffixes:
-            path = path.with_suffix('')
-        _shell_cmd(["psql", "-f", f"{path}",
-                    "-d", "datacube"])
+        if not path.with_suffix('').with_suffix('').with_suffix('.lock').exists():
+            path.with_suffix('').with_suffix('').with_suffix('.lock').touch()
+            path = _combine_split_files(path) if path.is_dir() else path
+            with tarfile.open(str(path), 'r:xz') as tar:
+                tar.extractall(path=path.parent)
+            sql_files = list(filter(lambda f: '.sql' in f,
+                                    listdir(path.parent)))
+            for sql_file in sql_files:
+                with open(path.parent.joinpath(sql_file), 'r') as old_file:
+                    with open(tempfile.mkstemp()[-1], 'w') as new_file:
+                        line = old_file.readline()
+                        while line:
+                            new_file.write(line.replace('$$PATH$$', str(path.parent)))
+                            line = old_file.readline()
+                remove(old_file.name)
+                move(new_file.name, old_file.name)
+                _shell_cmd(["psql", "-f", old_file.name,
+                            "-d", "datacube"])
+        else:
+            print('Lockfile exists, skipping population.')
     else:
         raise OSError('Tar file does not exist.')
