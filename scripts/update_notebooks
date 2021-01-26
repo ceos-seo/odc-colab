@@ -26,6 +26,7 @@ header1 "Updating notebooks..."
 
 header2 "Deleting old notebooks..."
 rm -rf ../notebooks
+rm -rf ../gee-notebooks
 
 # Clone the repo without all the files
 header2 "Cloning latest from repository..."
@@ -36,9 +37,10 @@ pushd ../data_cube_notebooks >/dev/null
 git sparse-checkout init --cone
 git sparse-checkout set notebooks/DCAL
 git checkout
+cp -a ./notebooks/DCAL ./gee-notebooks/DCAL
 
 # Patch the notebooks
-header2 "Patching notebooks..."
+header2 "Patching AWS notebooks..."
 for notebook in $(ls ./notebooks/DCAL | grep .ipynb); do
     if [[ $notebook == "DCAL_Custom_Mosaics_Dask.ipynb" || $notebook == "DCAL_Water_Extents.ipynb" ]]; then
         # Remove notebooks that will not work in Colab
@@ -46,7 +48,7 @@ for notebook in $(ls ./notebooks/DCAL | grep .ipynb); do
         rm -f ./notebooks/DCAL/$notebook
     else 
         header3 "Patching $notebook..."
-        patch ./notebooks/DCAL/$notebook ../notebook_patch.diff
+        patch ./notebooks/DCAL/$notebook ../patches/aws_patch.diff
         sed -i "s@<URI_PLACEHOLDER>@$colab_uri/$notebook@g" ./notebooks/DCAL/$notebook
         sed -i "s/ls8_lasrc[_a-z]*/ls8_usgs_sr_scene/g" ./notebooks/DCAL/$notebook
         perl -pi -e "s/platform(?!==| ==)[ =].*LANDSAT_7(\\\\\"|')/platform = 'LANDSAT_8'/g" ./notebooks/DCAL/$notebook
@@ -61,14 +63,44 @@ for notebook in $(ls ./notebooks/DCAL | grep .ipynb); do
     fi
 done
 
+header2 "Patching GEE notebooks..."
+for notebook in $(ls ./gee-notebooks/DCAL | grep .ipynb); do
+    if [[ $notebook == "DCAL_Custom_Mosaics_Dask.ipynb" || $notebook == "DCAL_Water_Extents.ipynb" ]]; then
+        # Remove notebooks that will not work in Colab
+        header3 "Removing $notebook..."
+        rm -f ./gee-notebooks/DCAL/$notebook
+    else 
+        header3 "Patching $notebook..."
+        patch ./gee-notebooks/DCAL/$notebook ../patches/gee_patch.diff
+        sed -i "s@<URI_PLACEHOLDER>@$colab_uri/$notebook@g" ./gee-notebooks/DCAL/$notebook
+        sed -i "s/ls8_lasrc[_a-z]*/ls8_google/g" ./gee-notebooks/DCAL/$notebook
+        perl -pi -e "s/platform(?!==| ==)[ =].*LANDSAT_7(\\\\\"|')/platform = 'LANDSAT_8'/g" ./gee-notebooks/DCAL/$notebook
+        perl -pi -e "s/product(?!==| ==)[ =].*ls7[_a-z]*(\\\\\"|')/product = 'ls8_google'/g" ./gee-notebooks/DCAL/$notebook
+        if [ $notebook == "DCAL_Land_Change.ipynb" ]; then
+            sed -i "s/2015/2019/g" ./gee-notebooks/DCAL/$notebook
+            sed -i "s/2002/2015/g" ./gee-notebooks/DCAL/$notebook
+        fi
+        if [ $notebook == "DCAL_Spectral_Products.ipynb" ]; then
+            sed -i "s/os.mkdir/os.makedirs/g" ./gee-notebooks/DCAL/$notebook
+        fi
+        sed -i "s/datacube.Datacube/earthengine.Datacube/g" ./gee-notebooks/DCAL/$notebook
+        sed -i "s/import datacube/from odc_gee import earthengine/g" ./gee-notebooks/DCAL/$notebook
+    fi
+done
+
 # Remove more files and move notebooks dir
 header2 "Cleaning and reorganizing files..."
 rm -rf ./.git*
 rm -f ./notebooks/*.py
+rm -f ./gee-notebooks/*.py
 for dir in $(ls -I "*.ipynb" ./notebooks/DCAL); do
     rm -rf ./notebooks/DCAL/$dir
 done
+for dir in $(ls -I "*.ipynb" ./gee-notebooks/DCAL); do
+    rm -rf ./gee-notebooks/DCAL/$dir
+done
 mv ./notebooks ../
+mv ./gee-notebook ../
 popd >/dev/null && rm -rf ../data_cube_notebooks
 
 header1 "Notebooks updated."

@@ -1,4 +1,4 @@
-# pylint: disable=broad-except,unused-argument,import-outside-toplevel
+# pylint: disable=broad-except,unused-argument,import-outside-toplevel,too-many-branches
 ''' Tools for setting up ODC in a Colab environment. '''
 import sys
 from os import environ, listdir, remove
@@ -224,6 +224,7 @@ def odc_colab_init(
         install_postgresql (bool): Optional; flag to install postgresql.
         use_defaults (bool): Optional;
             flag to install environment with default local database configuration.
+        install_odc_gee (bool): Optional; install the CEOS ODC-GEE toolset.
     '''
     # Set environment variables
     env = {
@@ -261,7 +262,11 @@ specified in one of the following ways:
 More information on ODC environment configuration can be found at:
   https://opendatacube.readthedocs.io/en/latest/ops/config.html
 """)
-
+    if kwargs.get('install_odc_gee'):
+        _check_git_install('odc-gee',
+                           'https://github.com/ceos-seo/odc-gee.git',
+                           verbose)
+        _check_pip_install('-e odc-gee', verbose)
 
     if install_datacube:
         _check_pip_install('datacube', verbose)
