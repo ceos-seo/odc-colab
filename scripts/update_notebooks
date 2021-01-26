@@ -37,7 +37,7 @@ pushd ../data_cube_notebooks >/dev/null
 git sparse-checkout init --cone
 git sparse-checkout set notebooks/DCAL
 git checkout
-cp -a ./notebooks/DCAL ./gee-notebooks/DCAL
+cp -a ./notebooks ./gee-notebooks
 
 # Patch the notebooks
 header2 "Patching AWS notebooks..."
@@ -100,7 +100,7 @@ for dir in $(ls -I "*.ipynb" ./gee-notebooks/DCAL); do
     rm -rf ./gee-notebooks/DCAL/$dir
 done
 mv ./notebooks ../
-mv ./gee-notebook ../
+mv ./gee-notebooks ../
 popd >/dev/null && rm -rf ../data_cube_notebooks
 
 header1 "Notebooks updated."
