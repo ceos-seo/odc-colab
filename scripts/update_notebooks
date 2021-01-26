@@ -21,7 +21,7 @@ if [ ! $git_version ]; then
 fi
 
 # Make sure the pwd is where we want it
-pushd $(dirname "$0")
+pushd $(dirname "$0")>/dev/null
 header1 "Updating notebooks..."
 
 header2 "Deleting old notebooks..."
@@ -32,7 +32,7 @@ header2 "Cloning latest from repository..."
 git clone --filter=blob:none --no-checkout https://github.com/ceos-seo/data_cube_notebooks.git ../data_cube_notebooks
 # Sparse checkout the repo to grab only what is needed
 header3 "Performing sparse checkout..."
-pushd ../data_cube_notebooks
+pushd ../data_cube_notebooks >/dev/null
 git sparse-checkout init --cone
 git sparse-checkout set notebooks/DCAL
 git checkout
@@ -69,6 +69,6 @@ for dir in $(ls -I "*.ipynb" ./notebooks/DCAL); do
     rm -rf ./notebooks/DCAL/$dir
 done
 mv ./notebooks ../
-popd && rm -rf ../data_cube_notebooks
+popd >/dev/null && rm -rf ../data_cube_notebooks
 
 header1 "Notebooks updated."

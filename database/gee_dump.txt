@@ -1,0 +1,17 @@
+https://raw.githubusercontent.com/ceos-seo/odc-colab/master/database/gee_dump/google_dump_aa.part
+https://raw.githubusercontent.com/ceos-seo/odc-colab/master/database/gee_dump/google_dump_ab.part
+https://raw.githubusercontent.com/ceos-seo/odc-colab/master/database/gee_dump/google_dump_ac.part
+https://raw.githubusercontent.com/ceos-seo/odc-colab/master/database/gee_dump/google_dump_ad.part
+https://raw.githubusercontent.com/ceos-seo/odc-colab/master/database/gee_dump/google_dump_ae.part
+https://raw.githubusercontent.com/ceos-seo/odc-colab/master/database/gee_dump/google_dump_af.part
+https://raw.githubusercontent.com/ceos-seo/odc-colab/master/database/gee_dump/google_dump_ag.part
+https://raw.githubusercontent.com/ceos-seo/odc-colab/master/database/gee_dump/google_dump_ah.part
+https://raw.githubusercontent.com/ceos-seo/odc-colab/master/database/gee_dump/google_dump_ai.part
+https://raw.githubusercontent.com/ceos-seo/odc-colab/master/database/gee_dump/google_dump_aj.part
+https://raw.githubusercontent.com/ceos-seo/odc-colab/master/database/gee_dump/google_dump_ak.part
+https://raw.githubusercontent.com/ceos-seo/odc-colab/master/database/gee_dump/google_dump_al.part
+https://raw.githubusercontent.com/ceos-seo/odc-colab/master/database/gee_dump/google_dump_am.part
+https://raw.githubusercontent.com/ceos-seo/odc-colab/master/database/gee_dump/google_dump_an.part
+https://raw.githubusercontent.com/ceos-seo/odc-colab/master/database/gee_dump/google_dump_ao.part
+https://raw.githubusercontent.com/ceos-seo/odc-colab/master/database/gee_dump/google_dump_ap.part
+https://raw.githubusercontent.com/ceos-seo/odc-colab/master/database/gee_dump/google_dump_aq.part
