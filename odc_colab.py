@@ -268,6 +268,7 @@ More information on ODC environment configuration can be found at:
         _check_git_install('odc-gee',
                            'https://github.com/ceos-seo/odc-gee.git',
                            verbose)
+        _pip_install('pip', '--upgrade', verbose)
         _check_pip_install('odc-gee', '-e', verbose)
 
     if install_datacube:
