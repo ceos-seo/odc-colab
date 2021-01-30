@@ -33,7 +33,7 @@ def _shell_cmd(cmd):
         universal_newlines=True, # Python 3.7 would prefer text=True
         )
 
-def _pip_install(module, verbose=False):
+def _pip_install(module, *args, verbose=False):
     ''' Installs a Python module using pip.
 
     Args:
@@ -42,7 +42,7 @@ def _pip_install(module, verbose=False):
 
     Returns the result of the pip command.
     '''
-    return _shell_cmd([sys.executable, "-m", "pip", "install", module])
+    return _shell_cmd([sys.executable, "-m", "pip", "install"]+list(args)+[module])
 
 def _apt_install(package, verbose=False):
     ''' Install a system package using apt-get.
@@ -91,7 +91,7 @@ def _package_found(package):
     '''
     return bool(_shell_cmd(["dpkg", "-l"]).count(package))
 
-def _check_pip_install(module, verbose=False):
+def _check_pip_install(module, *args, verbose=False):
     ''' Installs a Python package if it is not found.
 
     Args:
@@ -103,7 +103,7 @@ def _check_pip_install(module, verbose=False):
             print(f'Found {module} module, skipping install.')
     else:
         print(f'Module {module} was not found; installing it...')
-        shell_result = _pip_install(module)
+        shell_result = _pip_install(module, *args)
         if verbose:
             print(shell_result)
 
@@ -191,6 +191,7 @@ def odc_colab_init(
         install_datacube=True,
         install_ceos_utils=True,
         install_postgresql=True,
+        install_odc_gee=False,
         use_defaults=True,
         **kwargs
         ):
@@ -222,6 +223,7 @@ def odc_colab_init(
         install_datacube (bool): Optional; flag to install an ODC environment.
         install_ceos_utils (bool): Optional; flag to install CEOS ODC utilities.
         install_postgresql (bool): Optional; flag to install postgresql.
+        install_odc_gee (bool): Optional; flag to install CEOS ODC-GEE tools.
         use_defaults (bool): Optional;
             flag to install environment with default local database configuration.
         install_odc_gee (bool): Optional; install the CEOS ODC-GEE toolset.
@@ -262,11 +264,11 @@ specified in one of the following ways:
 More information on ODC environment configuration can be found at:
   https://opendatacube.readthedocs.io/en/latest/ops/config.html
 """)
-    if kwargs.get('install_odc_gee'):
+    if install_odc_gee:
         _check_git_install('odc-gee',
                            'https://github.com/ceos-seo/odc-gee.git',
                            verbose)
-        _check_pip_install('-e odc-gee', verbose)
+        _check_pip_install('odc-gee', '-e', verbose)
 
     if install_datacube:
         _check_pip_install('datacube', verbose)
