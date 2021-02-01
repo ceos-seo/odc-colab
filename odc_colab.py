@@ -267,21 +267,22 @@ More information on ODC environment configuration can be found at:
     if install_odc_gee:
         _check_git_install('odc-gee',
                            'https://github.com/ceos-seo/odc-gee.git',
-                           verbose)
-        _pip_install('pip', '--upgrade', verbose)
-        _check_pip_install('odc-gee', '-e', verbose)
+                           verbose=verbose)
+        _pip_install('pip', '--upgrade', verbose=verbose)
+        _check_pip_install('odc-gee', '-e', verbose=verbose)
+        _shell_cmd(["ln", "-sf", "/content/odc-gee/odc_gee", "/usr/local/lib/python3.6/dist-packages/odc_gee"])
 
     if install_datacube:
-        _check_pip_install('datacube', verbose)
+        _check_pip_install('datacube', verbose=verbose)
 
     if install_ceos_utils:
         _check_git_install('utils',
                            'https://github.com/ceos-seo/data_cube_utilities.git',
-                           verbose)
-        _check_pip_install('hdmedians', verbose)
+                           verbose=verbose)
+        _check_pip_install('hdmedians', verbose=verbose)
 
     if install_postgresql:
-        _check_apt_install('postgresql', verbose)
+        _check_apt_install('postgresql', verbose=verbose)
         if not _psql_running():
             try:
                 _shell_cmd(["service", "postgresql", "start"])
