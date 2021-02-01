@@ -264,14 +264,6 @@ specified in one of the following ways:
 More information on ODC environment configuration can be found at:
   https://opendatacube.readthedocs.io/en/latest/ops/config.html
 """)
-    if install_odc_gee:
-        _check_git_install('odc-gee',
-                           'https://github.com/ceos-seo/odc-gee.git',
-                           verbose=verbose)
-        _pip_install('pip', '--upgrade', verbose=verbose)
-        _check_pip_install('odc-gee', '-e', verbose=verbose)
-        _shell_cmd(["ln", "-sf", "/content/odc-gee/odc_gee", "/usr/local/lib/python3.6/dist-packages/odc_gee"])
-
     if install_datacube:
         _check_pip_install('datacube', verbose=verbose)
 
@@ -294,6 +286,15 @@ More information on ODC environment configuration can be found at:
                     #_shell_cmd(["datacube", "system", "init"])
             except Exception as error:
                 print(error)
+
+    if install_odc_gee:
+        _check_git_install('odc-gee',
+                           'https://github.com/ceos-seo/odc-gee.git',
+                           verbose=verbose)
+        _pip_install('pip', '--upgrade', verbose=verbose)
+        _check_pip_install('odc-gee', '-e', verbose=verbose)
+        _shell_cmd(["ln", "-sf", "/content/odc-gee/odc_gee", "/usr/local/lib/python3.6/dist-packages/odc_gee"])
+        _shell_cmd(["datacube", "system", "init"])
 
 def _combine_split_files(path):
     part_files = list(filter(lambda f: '.part' in f, listdir(path)))
