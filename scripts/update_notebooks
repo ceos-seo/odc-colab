@@ -77,9 +77,11 @@ for notebook in $(ls ./gee-notebooks/DCAL | grep .ipynb); do
     else 
         header3 "Patching $notebook..."
         patch ./gee-notebooks/DCAL/$notebook ../patches/gee_patch.diff
+        sed -i "s/datacube.Datacube/earthengine.Datacube/g" ./gee-notebooks/DCAL/$notebook
+        sed -i "s/import datacube/from odc_gee import earthengine/g" ./gee-notebooks/DCAL/$notebook
         sed -i "s@<URI_PLACEHOLDER>@$gee_colab_uri/$notebook@g" ./gee-notebooks/DCAL/$notebook
-	sed -i "s/from datacube.utils.aws/# from datacube.utils.aws/g" ./gee-notebooks/DCAL/$notebook
-	sed -i "s/configure_s3_access(/# configure_s3_access/g" ./gee-notebooks/DCAL/$notebook
+	    sed -i "s/from datacube.utils.aws/# from datacube.utils.aws/g" ./gee-notebooks/DCAL/$notebook
+	    sed -i "s/configure_s3_access(/# configure_s3_access/g" ./gee-notebooks/DCAL/$notebook
         sed -i "s/ls8_l2_c2[_a-z]*/ls8_google/g" ./gee-notebooks/DCAL/$notebook
         sed -i "s/ls8_lasrc[_a-z]*/ls8_google/g" ./gee-notebooks/DCAL/$notebook
         sed -i "s/dc.list_measurements\(\)\.loc\[product, 'nodata'\]/\{\*\*dict\(dc\.list_measurements\(\)\.loc\[product, 'nodata'\]\), \*\*\{alias: band_no_data_values\[key\] for key, aliases in dc\.list_measurements\(\)\.loc\[product, 'aliases'\]\.items\(\) for alias in aliases\}\}/g" ./gee-notebooks/DCAL/$notebook
@@ -96,8 +98,6 @@ for notebook in $(ls ./gee-notebooks/DCAL | grep .ipynb); do
         if [ $notebook == "DCAL_Spectral_Products.ipynb" ]; then
             sed -i "s/os.mkdir/os.makedirs/g" ./gee-notebooks/DCAL/$notebook
         fi
-        sed -i "s/datacube.Datacube/earthengine.Datacube/g" ./gee-notebooks/DCAL/$notebook
-        sed -i "s/import datacube/from odc_gee import earthengine/g" ./gee-notebooks/DCAL/$notebook
     fi
 done
 
