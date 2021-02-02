@@ -50,6 +50,8 @@ for notebook in $(ls ./notebooks/DCAL | grep .ipynb); do
     else 
         header3 "Patching $notebook..."
         patch ./notebooks/DCAL/$notebook ../patches/aws_patch.diff
+	sed -i "s/from datacube.utils.aws/# from datacube.utils.aws/g" ./notebooks/DCAL/$notebook
+	sed -i "s/configure_s3_access(/# configure_s3_access/g" ./notebooks/DCAL/$notebook
         sed -i "s@<URI_PLACEHOLDER>@$colab_uri/$notebook@g" ./notebooks/DCAL/$notebook
         sed -i "s/ls8_l2_c2/ls8_usgs_sr_scene/g" ./notebooks/DCAL/$notebook
         sed -i "s/ls8_lasrc[_a-z]*/ls8_usgs_sr_scene/g" ./notebooks/DCAL/$notebook
@@ -76,6 +78,8 @@ for notebook in $(ls ./gee-notebooks/DCAL | grep .ipynb); do
         header3 "Patching $notebook..."
         patch ./gee-notebooks/DCAL/$notebook ../patches/gee_patch.diff
         sed -i "s@<URI_PLACEHOLDER>@$gee_colab_uri/$notebook@g" ./gee-notebooks/DCAL/$notebook
+	sed -i "s/from datacube.utils.aws/# from datacube.utils.aws/g" ./gee-notebooks/DCAL/$notebook
+	sed -i "s/configure_s3_access(/# configure_s3_access/g" ./gee-notebooks/DCAL/$notebook
         sed -i "s/ls8_l2_c2[_a-z]*/ls8_google/g" ./gee-notebooks/DCAL/$notebook
         sed -i "s/ls8_lasrc[_a-z]*/ls8_google/g" ./gee-notebooks/DCAL/$notebook
         sed -i "s/dc.list_measurements\(\)\.loc\[product, 'nodata'\]/\{\*\*dict\(dc\.list_measurements\(\)\.loc\[product, 'nodata'\]\), \*\*\{alias: band_no_data_values\[key\] for key, aliases in dc\.list_measurements\(\)\.loc\[product, 'aliases'\]\.items\(\) for alias in aliases\}\}/g" ./gee-notebooks/DCAL/$notebook
