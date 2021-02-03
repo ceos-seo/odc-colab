@@ -271,8 +271,6 @@ More information on ODC environment configuration can be found at:
         _check_git_install('utils',
                            'https://github.com/ceos-seo/data_cube_utilities.git',
                            verbose=verbose)
-        # Patch for data_cube_utilities 2.22
-        _shell_cmd(["sed", "-i", "s/for i, data_arr_name in enumerate(rng.keys()):/for i, data_arr_name in enumerate(set(rng.keys()).intersection(set(data_arr_names))):/g", "./utils/data_cube_utilities/clean_mask.py"])
         _check_pip_install('hdmedians', verbose=verbose)
 
     if install_postgresql:
