@@ -293,7 +293,8 @@ More information on ODC environment configuration can be found at:
                            verbose=verbose)
         _pip_install('pip', '--upgrade', verbose=verbose)
         _check_pip_install('odc-gee', '-e', verbose=verbose)
-        _shell_cmd(["ln", "-sf", "/content/odc-gee/odc_gee", "/usr/local/lib/python3.6/dist-packages/odc_gee"])
+        _shell_cmd(["ln", "-sf", "/content/odc-gee/odc_gee",
+                    "/usr/local/lib/python3.6/dist-packages/odc_gee"])
         _shell_cmd(["datacube", "system", "init"])
 
 def _combine_split_files(path):
@@ -346,7 +347,7 @@ def populate_db(path=None, gee=False):
     from shutil import move
 
     if not path:
-        path = _download_db(gee)
+        path = _download_db(gee=gee)
 
     path = Path(path).absolute()
     if path.exists():
