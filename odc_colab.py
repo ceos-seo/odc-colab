@@ -298,10 +298,11 @@ More information on ODC environment configuration can be found at:
         _shell_cmd(["datacube", "system", "init"])
 
 def _combine_split_files(path):
+    from pathlib import Path
     part_files = list(filter(lambda f: '.part' in f, listdir(path)))
     if part_files:
         part_files.sort()
-        path = path.joinpath(part_files[0].split('.')[0][:-3])
+        path = Path(path).joinpath(part_files[0].split('.')[0][:-3])
         with open(path, 'wb') as combined_file:
             for part_file in part_files:
                 with open(path.parent.joinpath(part_file), 'rb') as _file:
