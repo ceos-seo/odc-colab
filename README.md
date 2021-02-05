@@ -10,6 +10,21 @@ repository:
 
 These notebooks can be found in the `notebooks/DCAL` folder.
 
+An extra set of notebooks can be found in the `gee-notebooks/DCAL` folder.
+These notebooks include examples of using Google Earth Engine data in the Colab
+environment. These notebooks are recommended for more advanced users as they
+will require some user interaction to run to completion, and the user needs to
+be registered as an Earth Engine developer. If not, you may submit an
+[application to Google](https://signup.earthengine.google.com/). These
+notebooks make use of the CEOS ODC-GEE project which can be found here:
+[https://github.com/ceos-seo/odc-gee](https://github.com/ceos-seo/odc-gee).
+
+**Note:** The `gee-notebooks` use a global Landsat 8 index from 2013-04 to
+2020-12 and will take time to run as they populate the initial database (expect
+~20 minutes). This process may be replaced with the [ODC-GEE real-time indexing
+capabilities](https://github.com/ceos-seo/odc-gee#real-time-indexing) in future
+versions of this project.
+
 ## Usage
 You will need to add some code to the top of your notebook to use the Python
 module. There are two different example options for environments shown, but
