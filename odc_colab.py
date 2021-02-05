@@ -1,7 +1,7 @@
-# pylint: disable=broad-except,unused-argument,import-outside-toplevel
+# pylint: disable=broad-except,unused-argument,import-outside-toplevel,too-many-branches
 ''' Tools for setting up ODC in a Colab environment. '''
 import sys
-from os import environ
+from os import environ, listdir, remove
 
 def build_datacube_db_url(hostname, username, password=None, dbname='datacube', port=5432):
     ''' Build a PostgreSQL URL for connecting to a networked ODC database.
@@ -33,7 +33,7 @@ def _shell_cmd(cmd):
         universal_newlines=True, # Python 3.7 would prefer text=True
         )
 
-def _pip_install(module, verbose=False):
+def _pip_install(module, *args, verbose=False):
     ''' Installs a Python module using pip.
 
     Args:
@@ -42,7 +42,7 @@ def _pip_install(module, verbose=False):
 
     Returns the result of the pip command.
     '''
-    return _shell_cmd([sys.executable, "-m", "pip", "install", module])
+    return _shell_cmd([sys.executable, "-m", "pip", "install"]+list(args)+[module])
 
 def _apt_install(package, verbose=False):
     ''' Install a system package using apt-get.
@@ -53,6 +53,7 @@ def _apt_install(package, verbose=False):
 
     Returns the result of the apt-get command.
     '''
+    _shell_cmd(["apt-get", "update"])
     return _shell_cmd(["apt-get", "install", package])
 
 def _git_install(url, module_name=None, verbose=False):
@@ -90,7 +91,7 @@ def _package_found(package):
     '''
     return bool(_shell_cmd(["dpkg", "-l"]).count(package))
 
-def _check_pip_install(module, verbose=False):
+def _check_pip_install(module, *args, verbose=False):
     ''' Installs a Python package if it is not found.
 
     Args:
@@ -102,7 +103,7 @@ def _check_pip_install(module, verbose=False):
             print(f'Found {module} module, skipping install.')
     else:
         print(f'Module {module} was not found; installing it...')
-        shell_result = _pip_install(module)
+        shell_result = _pip_install(module, *args)
         if verbose:
             print(shell_result)
 
@@ -173,7 +174,7 @@ db_hostname:
         return True
     return False
 
-def _psql_config_present():
+def _psql_running():
     ''' Checks if a PostgreSQL configuration is present.
 
     Returns:
@@ -181,11 +182,7 @@ def _psql_config_present():
         True if the configuration does exist.
     '''
     from os import path
-    import pwd
-    pw_names = [pw.pw_name for pw in pwd.getpwall()]
-    if (path.exists('/var/lib/postgresql/10/main/postgresql.conf') and
-            path.exists('/var/lib/postgresql/10/main/pg_hba.conf') and
-            'postgres' in pw_names):
+    if path.exists('/var/run/postgresql/10-main.pid'):
         return True
     return False
 
@@ -194,6 +191,7 @@ def odc_colab_init(
         install_datacube=True,
         install_ceos_utils=True,
         install_postgresql=True,
+        install_odc_gee=False,
         use_defaults=True,
         **kwargs
         ):
@@ -225,7 +223,10 @@ def odc_colab_init(
         install_datacube (bool): Optional; flag to install an ODC environment.
         install_ceos_utils (bool): Optional; flag to install CEOS ODC utilities.
         install_postgresql (bool): Optional; flag to install postgresql.
-        use_defaults (bool): Optional; flag to install environment with default local database configuration.
+        install_odc_gee (bool): Optional; flag to install CEOS ODC-GEE tools.
+        use_defaults (bool): Optional;
+            flag to install environment with default local database configuration.
+        install_odc_gee (bool): Optional; install the CEOS ODC-GEE toolset.
     '''
     # Set environment variables
     env = {
@@ -263,42 +264,20 @@ specified in one of the following ways:
 More information on ODC environment configuration can be found at:
   https://opendatacube.readthedocs.io/en/latest/ops/config.html
 """)
-
-
     if install_datacube:
-        _check_pip_install('datacube', verbose)
+        _check_pip_install('datacube', verbose=verbose)
 
     if install_ceos_utils:
         _check_git_install('utils',
                            'https://github.com/ceos-seo/data_cube_utilities.git',
-                           verbose)
-        _check_pip_install('hdmedians', verbose)
+                           verbose=verbose)
+        _check_pip_install('hdmedians', verbose=verbose)
 
     if install_postgresql:
-        import shutil
-        psql_lib = '/var/lib/postgresql/10/main'
-        _check_apt_install('postgresql', verbose)
-        if not _psql_config_present():
+        _check_apt_install('postgresql', verbose=verbose)
+        if not _psql_running():
             try:
-                shutil.copy(f'{psql_lib}/postgresql.auto.conf', f'{psql_lib}/postgresql.conf')
-                shutil.chown(f'{psql_lib}/postgresql.conf', 'postgres', 'postgres')
-                pg_hba = ("""
-# Allow any user on the local system to connect to any database with
-# any database user name using Unix-domain sockets (the default for local
-# connections).
-#
-# TYPE  DATABASE        USER            ADDRESS                 METHOD
-local   all             all                                     trust
-""").lstrip().rstrip()
-
-                with open(f'{psql_lib}/pg_hba.conf', 'w') as _file:
-                    _file.write(pg_hba)
-                shutil.chown(f'{psql_lib}/pg_hba.conf', 'postgres', 'postgres')
-                _shell_cmd(["sudo", "-u", "postgres",
-                            "/usr/lib/postgresql/10/bin/pg_ctl",
-                            "-D", psql_lib,
-                            "-l", "/var/log/postgresql/logfile",
-                            "start"])
+                _shell_cmd(["service", "postgresql", "start"])
                 _shell_cmd(["sudo", "-u", "postgres",
                             "createuser", "-s", "root"])
                 if install_datacube:
@@ -308,34 +287,88 @@ local   all             all                                     trust
             except Exception as error:
                 print(error)
 
-# TODO: May need to change this for split tar files due to GitHub size restrictions.
-def populate_db(tar_file=None):
+    if install_odc_gee:
+        _check_git_install('odc-gee',
+                           'https://github.com/ceos-seo/odc-gee.git',
+                           verbose=verbose)
+        _pip_install('pip', '--upgrade', verbose=verbose)
+        _check_pip_install('odc-gee', '-e', verbose=verbose)
+        _shell_cmd(["ln", "-sf", "/content/odc-gee/odc_gee", "/usr/local/lib/python3.6/dist-packages/odc_gee"])
+        _shell_cmd(["datacube", "system", "init"])
+
+def _combine_split_files(path):
+    part_files = list(filter(lambda f: '.part' in f, listdir(path)))
+    if part_files:
+        part_files.sort()
+        path = path.joinpath(part_files[0].split('.')[0][:-3])
+        with open(path, 'wb') as combined_file:
+            for part_file in part_files:
+                with open(path.parent.joinpath(part_file), 'rb') as _file:
+                    combined_file.write(_file.read())
+    return path
+
+def _download_db(*args, **kwargs):
+    from urllib import request
+    if kwargs.get('gee'):
+        url = 'https://raw.githubusercontent.com/ceos-seo/odc-colab/master/database/gee_dump.txt'
+        resp = request.urlopen(url)
+        if resp.code < 300:
+            for file_url in resp.readlines():
+                file_url = file_url.decode().rstrip()
+                part_file = f'./{file_url.split("/")[-1]}'
+                part_resp = request.urlopen(file_url)
+                if part_resp.code < 300:
+                    with open(part_file, 'wb') as _file:
+                        _file.write(part_resp.read())
+            return _combine_split_files('./')
+
+    url = 'https://raw.githubusercontent.com/ceos-seo/odc-colab/master/database/db_dump.tar.xz'
+    print('No database file supplied. Downloading default index.')
+    resp = request.urlopen(url)
+    if resp.code < 300:
+        tar_file = f'./{url.split("/")[-1]}'
+        with open(tar_file, 'wb') as _file:
+            _file.write(resp.read())
+    return tar_file
+
+def populate_db(path=None, gee=False):
     ''' Populates the datacube database from a compressed SQL dump.
 
     Args:
-        tar_file (str): The path to a tar file to load.
+        path (str): The path to a tar file to load or a directory of a split tar file.
+        earthengine (bool): Flag to download Google Earth Engine Landsat 8 index.
 
     Raises OSError if tar file is not found.
     '''
-    if not tar_file:
-        from urllib import request
-        url = 'https://raw.githubusercontent.com/ceos-seo/odc-colab/master/database/db_dump.tar.xz'
-        print('No database file supplied. Downloading default index.')
-        resp = request.urlopen(url)
-        if resp.code < 300:
-            tar_file = f'./{url.split("/")[-1]}'
-            with open(tar_file, 'wb') as _file:
-                _file.write(resp.read())
-
     import tarfile
+    import tempfile
     from pathlib import Path
-    path = Path(tar_file)
+    from shutil import move
+
+    if not path:
+        path = _download_db(gee)
+
+    path = Path(path).absolute()
     if path.exists():
-        with tarfile.open(path.name, 'r') as tar:
-            tar.extractall()
-        for suffix in path.suffixes:
-            path = path.with_suffix('')
-        _shell_cmd(["psql", "-f", f"{path}",
-                    "-d", "datacube"])
+        if not path.with_suffix('').with_suffix('').with_suffix('.lock').exists():
+            path.with_suffix('').with_suffix('').with_suffix('.lock').touch()
+            path = _combine_split_files(path) if path.is_dir() else path
+            with tarfile.open(str(path), 'r:xz') as tar:
+                tar.extractall(path=path.parent)
+            sql_files = list(filter(lambda f: '.sql' in f,
+                                    listdir(path.parent)))
+            for sql_file in sql_files:
+                with open(path.parent.joinpath(sql_file), 'r') as old_file:
+                    with open(tempfile.mkstemp()[-1], 'w') as new_file:
+                        line = old_file.readline()
+                        while line:
+                            new_file.write(line.replace('$$PATH$$', str(path.parent)))
+                            line = old_file.readline()
+                remove(old_file.name)
+                move(new_file.name, old_file.name)
+                _shell_cmd(["psql", "-f", old_file.name,
+                            "-d", "datacube"])
+        else:
+            print('Lockfile exists, skipping population.')
     else:
         raise OSError('Tar file does not exist.')

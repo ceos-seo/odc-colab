@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+pushd $(dirname "$0")>/dev/null && cd ../database/gee_dump
+echo "Creating download list for GEE DB parts."
+rm ../gee_dump.txt
+for file in *; do
+    echo "https://raw.githubusercontent.com/ceos-seo/odc-colab/master/database/gee_dump/$file" \
+        >> ../gee_dump.txt
+done
+
+echo "Finished. Part list can be found in the database/gee_dump.txt file."
