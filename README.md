@@ -48,7 +48,7 @@ of an existing ODC index:
 	populate_db()
 
 The `populate_db()` command without parameters will download
-`database/db_dump.sql.tar.xz` from this repository to use for populating the
+`database/db_dump.tar.xz` from this repository to use for populating the
 database. Optionally, you can upload your own file to the Colab notebooks and
 manually import the database by calling
 `populate_db(<database_dump_location>.tar.xz)`.
