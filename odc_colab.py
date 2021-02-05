@@ -324,7 +324,7 @@ def _download_db(*args, **kwargs):
                         _file.write(part_resp.read())
             return _combine_split_files('./')
 
-    url = 'https://raw.githubusercontent.com/ceos-seo/odc-colab/master/database/db_dump.tar.xz'
+    url = 'https://raw.githubusercontent.com/ceos-seo/odc-colab/master/database/db_dump.sql.tar.xz'
     print('No database file supplied. Downloading default index.')
     resp = request.urlopen(url)
     if resp.code < 300:
