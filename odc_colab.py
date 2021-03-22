@@ -312,19 +312,9 @@ def _combine_split_files(path):
 def _download_db(*args, **kwargs):
     from urllib import request
     if kwargs.get('gee'):
-        url = 'https://raw.githubusercontent.com/ceos-seo/odc-colab/master/database/gee_dump.txt'
-        resp = request.urlopen(url)
-        if resp.code < 300:
-            for file_url in resp.readlines():
-                file_url = file_url.decode().rstrip()
-                part_file = f'./{file_url.split("/")[-1]}'
-                part_resp = request.urlopen(file_url)
-                if part_resp.code < 300:
-                    with open(part_file, 'wb') as _file:
-                        _file.write(part_resp.read())
-            return _combine_split_files('./')
-
-    url = 'https://raw.githubusercontent.com/ceos-seo/odc-colab/master/database/db_dump.tar.xz'
+        url = 'https://raw.githubusercontent.com/ceos-seo/odc-colab/master/database/gee_dump.tar.xz'
+    else:
+        url = 'https://raw.githubusercontent.com/ceos-seo/odc-colab/master/database/db_dump.tar.xz'
     print('No database file supplied. Downloading default index.')
     resp = request.urlopen(url)
     if resp.code < 300:
