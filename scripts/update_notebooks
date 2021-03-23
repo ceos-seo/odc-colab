@@ -85,7 +85,7 @@ for notebook in $(ls ./gee-notebooks/DCAL | grep .ipynb); do
         sed -i "s/ls8_l2_c2[_a-z]*/ls8_google/g" ./gee-notebooks/DCAL/$notebook
         sed -i "s/ls8_lasrc[_a-z]*/ls8_google/g" ./gee-notebooks/DCAL/$notebook
         sed -i "s/dc.list_measurements().loc\[product, 'nodata'\]/{**dict(dc.list_measurements().loc[product, 'nodata']), **{alias: dc.list_measurements().loc[product, 'nodata'][key] for key, aliases in dc.list_measurements().loc[product, 'aliases'].items() for alias in aliases}}/g" ./gee-notebooks/DCAL/$notebook
-        perl -pi -e "s/full_lat, full_lon, min_max_dates(?!==| ==)[ =].*get_overlapping_area\(api, platforms, products\)/from datetime import datetime; full_lat, full_lon, min_max_dates = \(\(-90, 90\), \(-180, 180\), np.array\(\[\[datetime.strptime\('2014-04', '%Y-%m'\), datetime.strptime\('2020-12', '%Y-%m'\)\]\]\)\)/g" ./gee-notebooks/DCAL/$notebook
+        perl -pi -e "s/full_lat, full_lon, min_max_dates(?!==| ==)[ =].*get_overlapping_area\(api, platforms, products\)/from datetime import datetime; full_lat, full_lon, min_max_dates = \(\(-90, 90\), \(-180, 180\), np.array\(\[\[datetime.strptime\('2014-04', '%Y-%m'\), datetime.strftime\(datetime.utcnow\(\), '%Y-%m-%d'\)\]\]\)\)/g" ./gee-notebooks/DCAL/$notebook
         perl -pi -e "s/full_lat, full_lon, min_max_dates(?!==| ==)[ =].*get_product_extents\(api, platform, product\)/from datetime import datetime; full_lat, full_lon, min_max_dates = \(\(-90, 90\), \(-180, 180\), \(datetime.strptime\('2014-04', '%Y-%m'\), datetime.strptime\('2020-12', '%Y-%m'\)\)\)/g" ./gee-notebooks/DCAL/$notebook
         perl -pi -e "s/dc(?!==| ==)[ =].*api\.dc/dc = earthengine.Datacube\(\)/g" ./gee-notebooks/DCAL/$notebook
         # Patch until ODC-GEE update
