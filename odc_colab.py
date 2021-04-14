@@ -272,6 +272,8 @@ More information on ODC environment configuration can be found at:
                            'https://github.com/ceos-seo/data_cube_utilities.git',
                            verbose=verbose)
         _check_pip_install('hdmedians', verbose=verbose)
+        _shell_cmd(['mkdir', '-p', '/content/output'])
+        _shell_cmd(['mkdir', '-p', '/content/geotiffs'])
 
     if install_postgresql:
         _check_apt_install('postgresql', verbose=verbose)
@@ -313,10 +315,7 @@ def _combine_split_files(path):
 
 def _download_db(*args, **kwargs):
     from urllib import request
-    if kwargs.get('gee'):
-        url = 'https://raw.githubusercontent.com/ceos-seo/odc-colab/master/database/gee_dump.tar.xz'
-    else:
-        url = 'https://raw.githubusercontent.com/ceos-seo/odc-colab/master/database/db_dump.tar.xz'
+    url = 'https://raw.githubusercontent.com/ceos-seo/odc-colab/master/database/db_dump.tar.xz'
     print('No database file supplied. Downloading default index.')
     resp = request.urlopen(url)
     if resp.code < 300:
@@ -325,7 +324,7 @@ def _download_db(*args, **kwargs):
             _file.write(resp.read())
     return tar_file
 
-def populate_db(path=None, gee=False):
+def populate_db(path=None):
     ''' Populates the datacube database from a compressed SQL dump.
 
     Args:
@@ -340,7 +339,7 @@ def populate_db(path=None, gee=False):
     from shutil import move
 
     if not path:
-        path = _download_db(gee=gee)
+        path = _download_db()
 
     path = Path(path).absolute()
     if path.exists():
