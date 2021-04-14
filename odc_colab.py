@@ -361,6 +361,10 @@ def populate_db(path=None):
                 move(new_file.name, old_file.name)
                 _shell_cmd(["psql", "-f", old_file.name,
                             "-d", "datacube"])
+            cleanup = [remove(_dir) for _dir in listdir('./')\
+                       if '.dat' in _dir or '.sql' in _dir]
+            if cleanup:
+                print('Cleaned up extracted database files.')
         else:
             print('Lockfile exists, skipping population.')
     else:
