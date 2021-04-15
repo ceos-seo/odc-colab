@@ -21,7 +21,7 @@
 >    "source": [
 >     "!wget -nc https://raw.githubusercontent.com/ceos-seo/odc-colab/master/odc_colab.py\n",
 >     "from odc_colab import odc_colab_init\n",
->     "odc_colab_init(install_odc_gee=True)"
+>     "odc_colab_init()"
 >    ]
 >   },
 >   {
@@ -38,6 +38,6 @@
 >    "outputs": [],
 >    "source": [
 >     "from odc_colab import populate_db\n",
->     "populate_db(gee=True)"
+>     "populate_db()"
 >    ]
 >   },
