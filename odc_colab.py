@@ -264,6 +264,8 @@ specified in one of the following ways:
 More information on ODC environment configuration can be found at:
   https://opendatacube.readthedocs.io/en/latest/ops/config.html
 """)
+    # Upgrade pip to do proper dependency resolution
+    _pip_install('pip', '--upgrade', verbose=verbose)
     if install_datacube:
         _check_pip_install('datacube', verbose=verbose)
 
@@ -294,7 +296,6 @@ More information on ODC environment configuration can be found at:
         _check_git_install('odc-gee',
                            'https://github.com/ceos-seo/odc-gee.git',
                            verbose=verbose)
-        _pip_install('pip', '--upgrade', verbose=verbose)
         _check_pip_install('odc-gee', '-e', verbose=verbose)
         _shell_cmd(["ln", "-sf", "/content/odc-gee/odc_gee",
                     "/usr/local/lib/python3.6/dist-packages/odc_gee"])
