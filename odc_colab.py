@@ -273,7 +273,6 @@ More information on ODC environment configuration can be found at:
         _check_git_install('utils',
                            'https://github.com/ceos-seo/data_cube_utilities.git',
                            verbose=verbose)
-        _check_pip_install('hdmedians', verbose=verbose)
         _pip_install('xarray>=0.16.1', '--upgrade', verbose=verbose)
         _shell_cmd(['mkdir', '-p', '/content/output'])
         _shell_cmd(['mkdir', '-p', '/content/geotiffs'])
