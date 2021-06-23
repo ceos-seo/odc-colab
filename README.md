@@ -6,7 +6,7 @@ ODC environment through simple method calls.
 
 This repository includes several example notebooks in the `./notebooks`
 directory. We suggest starting with
-[Getting\_Started\_ODC\_and\_Colab.ipynb](https://github.com/ceos-seo/odc-colab/blob/master/notebooks/Getting_Started_ODC_and_Colab.ipynb)
+[01.01.Getting\_Started\_ODC\_and\_Colab.ipynb](https://github.com/ceos-seo/odc-colab/blob/master/notebooks/01.01.Getting_Started_ODC_and_Colab.ipynb)
 if unfamiliar with ODC or Colab notebooks.
 
 The example notebooks make use of Google Earth Engine data. They will will
