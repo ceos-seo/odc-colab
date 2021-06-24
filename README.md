@@ -16,13 +16,11 @@ be registered as an Earth Engine developer. If not, you may submit an
 notebooks make use of the CEOS ODC-GEE project which can be found here:
 [https://github.com/ceos-seo/odc-gee](https://github.com/ceos-seo/odc-gee).
 
-**Note:** The `gee-notebooks` use a global Landsat 8 dataset obtained from GEE
+**Note:** The `gee-notebooks` use global products obtained from GEE
 using [ODC-GEE real-time indexing
-capabilities](https://github.com/ceos-seo/odc-gee#real-time-indexing).
-Landsat 7, Sentinel-1 and Sentinel-2 products are also defined for use, but
-unused in the current notebooks. Other GEE datasets may also be used by
-including an asset parameter in the `dc.load` as shown in the README of the
-ODC-GEE project.
+capabilities](https://github.com/ceos-seo/odc-gee#real-time-indexing). Other
+GEE datasets may also be used by including an asset parameter in the `dc.load`
+as shown in the README of the ODC-GEE project.
 
 ## Usage
 You will need to add some code to the top of your notebook to use the Python
