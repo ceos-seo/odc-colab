@@ -267,7 +267,7 @@ More information on ODC environment configuration can be found at:
     # Upgrade pip to do proper dependency resolution
     _pip_install('pip', '--upgrade', verbose=verbose)
     if install_datacube:
-        _check_pip_install('datacube', verbose=verbose)
+        _pip_install('datacube==1.8.3', verbose=verbose)
 
     if install_ceos_utils:
         _check_git_install('utils',
