@@ -1,8 +1,9 @@
 # ODC-Colab
 ODC-Colab is a CEOS initiative to demonstrate [Open Data
-Cube](https://www.opendatacube.org/) notebooks running on Google Colab. This is
-done through a Python module with methods that perform an automated setup of an
-ODC environment through simple method calls.
+Cube](https://www.opendatacube.org/) notebooks running within [Google
+Colab](https://colab.research.google.com/). This is done through a Python
+module with methods that perform an automated setup of an ODC environment
+through simple method calls.
 
 This repository includes several example notebooks in the `./notebooks`
 directory. We suggest starting with
@@ -28,7 +29,9 @@ module. There are two different example options for environments shown, but
 these are not the only uses of the module. More options are available and can
 be found by reading the included docstrings in the `odc_colab.py` source file.
 ### Local database environment
-This environment is for installing ODC with a local database.
+This environment is for installing ODC with a local database. Local in this
+context means **local to the Colab VM**. This code should not be used outside
+of Colab.
 
 The following block downloads the Python module and then runs the setup with a
 default local database configuration that includes CEOS ODC utilities:
@@ -65,7 +68,9 @@ example notebooks, or you may have to provide a database dump to populate the
 index.
 
 ### Remote database environment
-This environment is for installing ODC with a remote database.
+This environment is for installing ODC within Colab for a remote database
+connection. A remote database would be a database outside of the Colab VM (i.e.
+a remote PostgreSQL server).
 
 The following block downloads the Python module, sets an environment variable
 to allow remote connections, and initializes the ODC environment with CEOS ODC
