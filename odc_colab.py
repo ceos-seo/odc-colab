@@ -1,7 +1,12 @@
-# pylint: disable=broad-except,unused-argument,import-outside-toplevel,too-many-branches
+# pylint: disable=broad-except,unused-argument,import-outside-toplevel,too-many-arguments,too-many-branches
 ''' Tools for setting up ODC in a Colab environment. '''
+import pwd
 import sys
-from os import environ, listdir, remove
+from os import environ, getuid, listdir, remove
+
+assert 'google.colab' in sys.modules, 'Not in a Google Colab environment.'
+assert pwd.getpwuid(getuid()).pw_name == 'root', 'Not running as root.'
+
 
 def build_datacube_db_url(hostname, username, password=None, dbname='datacube', port=5432):
     ''' Build a PostgreSQL URL for connecting to a networked ODC database.
