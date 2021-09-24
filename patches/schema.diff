@@ -1,0 +1,9 @@
+@@ -51,7 +51,7 @@ definitions:
+         properties:
+             name:
+                 type: string
+-                pattern: '^\w+$'
++                pattern: '^[\w-]+$'
+             dtype:
+                 "$ref": "#/definitions/dtype"
+             nodata:
