@@ -305,7 +305,30 @@ More information on ODC environment configuration can be found at:
                     "/usr/local/lib/python3.6/dist-packages/odc_gee"])
         _shell_cmd(["ln", "-sf", "/content/odc-gee/odc_gee",
                     "/usr/local/lib/python3.7/dist-packages/odc_gee"])
+        _patch_schema()
         _shell_cmd(["datacube", "system", "init"])
+
+def _patch_schema():
+    from importlib.util import find_spec
+    from pathlib import Path
+    from types import SimpleNamespace
+    from urllib import request
+
+    # Download file if it doesn't exist
+    patch_url = 'https://raw.githubusercontent.com/ceos-seo/odc-colab/master/patches/schema.diff'
+    patch_file = f'./{patch_url.split("/")[-1]}'
+    dummy_response = SimpleNamespace(code=0)
+    resp = request.urlopen(patch_url) if not Path(patch_file).exists() else dummy_response
+    if resp.code in range(200, 300):
+        with open(patch_file, 'wb') as _file:
+            _file.write(resp.read())
+
+    # Patch file if unlocked
+    if not Path(patch_file).with_suffix('.lock').exists():
+        odc_loc = '/usr/local/lib/python3.7/dist-packages/datacube'
+        _shell_cmd(["patch", f"{odc_loc}/model/schema/dataset-type-schema.yaml",
+                    patch_file])
+        Path(patch_file).with_suffix('.lock').touch()
 
 def _combine_split_files(path):
     from pathlib import Path
