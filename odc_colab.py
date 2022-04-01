@@ -3,6 +3,8 @@
 import pwd
 import sys
 from os import environ, getuid, listdir, remove
+import subprocess
+import warnings
 
 assert 'google.colab' in sys.modules, 'Not in a Google Colab environment.'
 assert pwd.getpwuid(getuid()).pw_name == 'root', 'Not running as root.'
@@ -31,7 +33,6 @@ def _shell_cmd(cmd):
 
     Returns the output of the command.
     '''
-    import subprocess
     return subprocess.check_output(
         cmd,
         stderr=subprocess.STDOUT,
@@ -58,7 +59,10 @@ def _apt_install(package, verbose=False):
 
     Returns the result of the apt-get command.
     '''
-    _shell_cmd(["apt-get", "update"])
+    try:
+        _shell_cmd(["apt-get", "update"])
+    except subprocess.CalledProcessError:
+        warnings.warn(message=f'Unable to complete `apt-get update` before installing "{package}".  Attempting to install anyway.', stacklevel=2)
     return _shell_cmd(["apt-get", "install", package])
 
 def _git_install(url, module_name=None, verbose=False):
@@ -94,7 +98,11 @@ def _package_found(package):
     Args:
         package (str): The package name to check.
     '''
-    return bool(_shell_cmd(["dpkg", "-l"]).count(package))
+    try:
+        return bool(_shell_cmd(["dpkg", "-l"]).count(package))
+    except Exception as error:
+        warnings.warn(message=f'Unable to check dpkg for "{package}" package.  Assuming it is not present.', stacklevel=2)
+    return False
 
 def _check_pip_install(module, *args, verbose=False):
     ''' Installs a Python package if it is not found.
