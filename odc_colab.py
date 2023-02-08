@@ -286,7 +286,7 @@ More information on ODC environment configuration can be found at:
         _check_git_install('utils',
                            'https://github.com/ceos-seo/data_cube_utilities.git',
                            verbose=verbose)
-        _pip_install('xarray>=0.16.1', '--upgrade', verbose=verbose)
+        _pip_install('xarray==2022.3.0', '--upgrade', verbose=verbose)
         _shell_cmd(['mkdir', '-p', '/content/output'])
         _shell_cmd(['mkdir', '-p', '/content/geotiffs'])
 
@@ -310,9 +310,7 @@ More information on ODC environment configuration can be found at:
                            verbose=verbose)
         _check_pip_install('odc-gee', '-e', verbose=verbose)
         _shell_cmd(["ln", "-sf", "/content/odc-gee/odc_gee",
-                    "/usr/local/lib/python3.6/dist-packages/odc_gee"])
-        _shell_cmd(["ln", "-sf", "/content/odc-gee/odc_gee",
-                    "/usr/local/lib/python3.7/dist-packages/odc_gee"])
+                    "/usr/local/lib/python3.8/dist-packages/odc_gee"])
         _patch_schema()
         _shell_cmd(["datacube", "system", "init"])
 
@@ -333,7 +331,7 @@ def _patch_schema():
 
     # Patch file if unlocked
     if not Path(patch_file).with_suffix('.lock').exists():
-        odc_loc = '/usr/local/lib/python3.7/dist-packages/datacube'
+        odc_loc = '/usr/local/lib/python3.8/dist-packages/datacube'
         _shell_cmd(["patch", f"{odc_loc}/model/schema/dataset-type-schema.yaml",
                     patch_file])
         Path(patch_file).with_suffix('.lock').touch()
