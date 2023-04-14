@@ -281,6 +281,8 @@ More information on ODC environment configuration can be found at:
     _pip_install('pip', '--upgrade', verbose=verbose)
     if install_datacube:
         _pip_install('datacube==1.8.3', verbose=verbose)
+        _pip_install('click==7.1.2', verbose=verbose)
+        _pip_install('SQLAlchemy==1.4', verbose=verbose)
 
     if install_ceos_utils:
         _check_git_install('utils',
@@ -305,16 +307,22 @@ More information on ODC environment configuration can be found at:
                 print(error)
 
     if install_odc_gee:
+        import site
+        import os
+        dist_packages_dirs = site.getsitepackages()
+        for d in dist_packages_dirs:
+            if os.path.isdir(f'{d}/datacube'):
+                dist_packages_dir = d
         _check_git_install('odc-gee',
                            'https://github.com/ceos-seo/odc-gee.git',
                            verbose=verbose)
         _check_pip_install('odc-gee', '-e', verbose=verbose)
         _shell_cmd(["ln", "-sf", "/content/odc-gee/odc_gee",
-                    "/usr/local/lib/python3.8/dist-packages/odc_gee"])
-        _patch_schema()
+                    f"{dist_packages_dir}/odc_gee"])
+        _patch_schema(dist_packages_dir)
         _shell_cmd(["datacube", "system", "init"])
 
-def _patch_schema():
+def _patch_schema(dist_packages_dir):
     from importlib.util import find_spec
     from pathlib import Path
     from types import SimpleNamespace
@@ -331,7 +339,7 @@ def _patch_schema():
 
     # Patch file if unlocked
     if not Path(patch_file).with_suffix('.lock').exists():
-        odc_loc = '/usr/local/lib/python3.8/dist-packages/datacube'
+        odc_loc = f'{dist_packages_dir}/datacube'
         _shell_cmd(["patch", f"{odc_loc}/model/schema/dataset-type-schema.yaml",
                     patch_file])
         Path(patch_file).with_suffix('.lock').touch()
